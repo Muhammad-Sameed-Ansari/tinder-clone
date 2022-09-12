@@ -3,12 +3,12 @@ import React from 'react'
 import useAuth from '../hooks/useAuth'
 
 const LoginScreen = () => {
-    const { signInWithGoogle } = useAuth()
+    const { promptAsync } = useAuth()
 
     return (
         <View>
             <Text>I am the LoginScreen</Text>
-            <Button title='Login' onPress={signInWithGoogle}/>
+            <Button title='Login' onPress={promptAsync}/>
         </View>
     )
 }
