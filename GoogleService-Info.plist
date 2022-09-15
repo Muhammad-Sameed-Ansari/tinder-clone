@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>590079380266-j9f7bgg4o1lrhbgvic11rp1urll0irjh.apps.googleusercontent.com</string>
+	<string>1043035196161-7riq54rjf7vsjs28igqbnuik96j2go84.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.590079380266-j9f7bgg4o1lrhbgvic11rp1urll0irjh</string>
+	<string>com.googleusercontent.apps.1043035196161-7riq54rjf7vsjs28igqbnuik96j2go84</string>
 	<key>API_KEY</key>
-	<string>AIzaSyADdPb8vyPw1u9pX4oncLjOjhJk-wSTo0k</string>
+	<string>AIzaSyBpMnL5DU4dyqX70JF6KkkW4tlaiHDNO40</string>
 	<key>GCM_SENDER_ID</key>
-	<string>590079380266</string>
+	<string>1043035196161</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>host.exp.exponent</string>
+	<string>com.clone.tinderclone</string>
 	<key>PROJECT_ID</key>
-	<string>tinder-clone-584f9</string>
+	<string>tindercloneexpo</string>
 	<key>STORAGE_BUCKET</key>
-	<string>tinder-clone-584f9.appspot.com</string>
+	<string>tindercloneexpo.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:590079380266:ios:19e6490ef97b6d9d012c53</string>
+	<string>1:1043035196161:ios:2769fb6f398d0a0bb82900</string>
 </dict>
 </plist>

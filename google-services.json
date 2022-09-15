@@ -1,40 +1,48 @@
 {
   "project_info": {
-    "project_number": "590079380266",
-    "project_id": "tinder-clone-584f9",
-    "storage_bucket": "tinder-clone-584f9.appspot.com"
+    "project_number": "1043035196161",
+    "project_id": "tindercloneexpo",
+    "storage_bucket": "tindercloneexpo.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:590079380266:android:bfebfd1ba89918ce012c53",
+        "mobilesdk_app_id": "1:1043035196161:android:f20b7a45a0473cb6b82900",
         "android_client_info": {
-          "package_name": "host.exp.exponent"
+          "package_name": "com.clone.tinderclone"
         }
       },
       "oauth_client": [
         {
-          "client_id": "590079380266-h81qbqjp39eeerjrqvcnbncq7tvv8m5t.apps.googleusercontent.com",
+          "client_id": "1043035196161-lgf7hu1r6ft0ip48sa611nu3n2vdl6so.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.clone.tinderclone",
+            "certificate_hash": "b9855e8f2883ce4b43882de4c9b17d2a8594fd62"
+          }
+        },
+        {
+          "client_id": "1043035196161-i96qatqd7gtn1jj342utafv1r7gr0ogg.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC7P4s8fOsQzeVZQNHj-ctCFmXEcfo-XSY"
+          "current_key": "AIzaSyAHJGVvlFKGW_twB9xNtfFA1IN7oWoaFik"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "590079380266-h81qbqjp39eeerjrqvcnbncq7tvv8m5t.apps.googleusercontent.com",
+              "client_id": "1043035196161-i96qatqd7gtn1jj342utafv1r7gr0ogg.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "590079380266-j9f7bgg4o1lrhbgvic11rp1urll0irjh.apps.googleusercontent.com",
+              "client_id": "1043035196161-7riq54rjf7vsjs28igqbnuik96j2go84.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "host.exp.exponent"
+                "bundle_id": "com.clone.tinderclone"
               }
             }
           ]
