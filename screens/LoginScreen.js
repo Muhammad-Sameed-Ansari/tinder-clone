@@ -1,14 +1,39 @@
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button, ImageBackground, TouchableOpacity } from 'react-native'
 import React from 'react'
 import useAuth from '../hooks/useAuth'
 
+import { images } from '../constants'
+
 const LoginScreen = () => {
-    const { signInWithGoogle } = useAuth()
+    const { signInWithGoogle, loading } = useAuth()
 
     return (
-        <View>
-            <Text>I am the LoginScreen</Text>
-            <Button title='Login' onPress={signInWithGoogle}/>
+        <View style={{ flex: 1 }}>
+            <ImageBackground
+                resizeMode='cover'
+                style={{ flex: 1}}
+                source={images.tinder_login}
+            >
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        bottom: 160,
+                        width: 208,
+                        marginHorizontal: '25%',
+                        backgroundColor: 'white',
+                        padding: 16,
+                        borderRadius: 16
+                    }}
+                    onPress={signInWithGoogle}
+                >
+                    <Text
+                        style={{
+                            textAlign: 'center',
+                            fontWeight: '600'
+                        }}
+                    >Sign in & get swiping</Text>
+                </TouchableOpacity>
+            </ImageBackground>
         </View>
     )
 }
