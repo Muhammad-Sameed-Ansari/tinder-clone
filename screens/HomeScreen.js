@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native'
 import useAuth from '../hooks/useAuth'
 import { images } from '../constants'
 import { Ionicons } from '@expo/vector-icons'; 
+import Swiper from 'react-native-deck-swiper'
 
 const HomeScreen = () => {
     const navigation = useNavigation()
@@ -44,6 +45,8 @@ const HomeScreen = () => {
                     <Ionicons name='chatbubbles-sharp' size={30} color='#FF5864' />
                 </TouchableOpacity>
             </View>
+
+            <Swiper />
         </SafeAreaView>
     )
 }
