@@ -59,7 +59,7 @@ const HomeScreen = () => {
                     />
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Modal')}>
                     <Image 
                         style={{
                             height: 56,
