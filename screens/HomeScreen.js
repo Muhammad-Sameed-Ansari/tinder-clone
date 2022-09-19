@@ -1,14 +1,15 @@
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '../hooks/useAuth'
 import { images } from '../constants'
-import { Ionicons } from '@expo/vector-icons'; 
+import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons'; 
 import Swiper from 'react-native-deck-swiper'
 
 const HomeScreen = () => {
     const navigation = useNavigation()
     const { user, logOut } = useAuth()
+    const swipeRef = useRef(null)
 
     const DUMMY_DATA = [
         {
@@ -75,12 +76,39 @@ const HomeScreen = () => {
 
             <View style={{ flex: 1, marginTop: -6 }}>
                 <Swiper 
+                    ref={swipeRef}
                     containerStyle={{ backgroundColor: 'transparent' }}
                     cards={DUMMY_DATA}
                     stackSize={5}
                     cardIndex={0}
                     animateCardOpacity
                     verticalSwipe={false}
+                    overlayLabels={{
+                        left: {
+                            title: "NOPE",
+                            style: {
+                                label: {
+                                    textAlign: 'right',
+                                    color: 'red'
+                                }
+                            }
+                        },
+                        right: {
+                            title: "MATCH",
+                            style: {
+                                label: {
+                                    color: 'green'
+                                }
+                            }
+                        }
+                    }}
+                    onSwipedLeft={() => {
+                        console.log("SWIPE PASS")
+                    }}
+                    onSwipedRight={() => {
+                        console.log("SWIPE MATCH")
+                    }}
+                    backgroundColor={'#4FD0E9'}
                     renderCard={(card) => (
                         <View 
                             key={card.id} 
@@ -97,7 +125,7 @@ const HomeScreen = () => {
                             />
 
                             <View
-                                style={{
+                                style={[{
                                     position:'absolute',
                                     flexDirection: 'row',
                                     bottom: 0,
@@ -109,13 +137,25 @@ const HomeScreen = () => {
                                     paddingVertical: 8,
                                     borderBottomLeftRadius: 12,
                                     borderBottomRightRadius: 12
-                                }}
+                                }, styles.cardShadow]}
                             >
                                 <View>
-                                    <Text>{card.firstName} {card.lastName}</Text>
+                                    <Text 
+                                        style={{ 
+                                            fontSize: 20, 
+                                            lineHeight: 28,
+                                            fontWeight: '700'
+                                        }}
+                                    >{card.firstName} {card.lastName}</Text>
                                     <Text>{card.occupation}</Text>
                                 </View>
-                                <Text>{card.age}</Text>
+                                <Text
+                                    style={{
+                                        fontSize: 24, 
+                                        lineHeight: 32,
+                                        fontWeight: '700'
+                                    }}
+                                >{card.age}</Text>
                             </View>
 
                         </View>
@@ -124,9 +164,45 @@ const HomeScreen = () => {
                     )}
                 />
             </View>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}> 
+                <TouchableOpacity 
+                    onPress={() => swipeRef.current.swipeLeft()}
+                    style={[styles.passMatchBtns, { backgroundColor: 'rgb(254, 202, 202)' }]}    
+                >
+                    <Entypo name="cross" size={24} color='red' />
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                    onPress={() => swipeRef.current.swipeRight()}
+                    style={[styles.passMatchBtns, { backgroundColor: 'rgb(187, 247, 208)'}]}
+                >
+                    <AntDesign name="heart" size={24} color='green' />
+                </TouchableOpacity>
+            </View>
             
         </SafeAreaView>
     )
 }
 
 export default HomeScreen
+
+const styles = StyleSheet.create({
+    cardShadow: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 1
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.41,
+        elevation: 2
+    },
+    passMatchBtns: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 64,
+        height: 64,
+        borderRadius: 99
+    }
+})
