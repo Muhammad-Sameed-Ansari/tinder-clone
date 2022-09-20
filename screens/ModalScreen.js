@@ -2,13 +2,30 @@ import { View, Text, Image, StyleSheet, TextInput, TouchableOpacity } from 'reac
 import React, { useState } from 'react'
 import { images } from '../constants'
 import useAuth from '../hooks/useAuth'
-
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { db } from '../firebase'
+import { useNavigation } from '@react-navigation/native'
 
 const ModalScreen = () => {
+    const navigation = useNavigation()
     const { user } = useAuth()
     const [image, setImage] = useState(null)
     const [job, setJob] = useState(null)
     const [age, setAge] = useState(null)
+
+    const updateUserProfile = () => {
+        setDoc(doc(db, "users", user.uid), {
+            id: user.uid,
+            displayName: user.displayName,
+            photoURL: image,
+            job: job,
+            age: age,
+            timestamp: serverTimestamp()
+        })
+        .then(() => navigation.replace())
+        .catch((error) => alert(error.message))
+
+    }
 
     const incompleteForm = !image || !job || !age;
 
@@ -49,6 +66,7 @@ const ModalScreen = () => {
             />
 
             <TouchableOpacity 
+                onPress={updateUserProfile}
                 disabled={incompleteForm}
                 style={styles.updateBtn(incompleteForm)}
             >
