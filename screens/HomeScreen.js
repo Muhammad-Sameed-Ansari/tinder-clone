@@ -1,15 +1,109 @@
 import { View, Text, SafeAreaView, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useRef } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import useAuth from '../hooks/useAuth'
 import { images } from '../constants'
 import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons'; 
 import Swiper from 'react-native-deck-swiper'
+import { collection, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore'
+import { db } from '../firebase'
+import generateId from '../lib/generateId'
 
 const HomeScreen = () => {
     const navigation = useNavigation()
     const { user, logOut } = useAuth()
+    const [profiles, setProfiles] = useState([])
     const swipeRef = useRef(null)
+
+    useLayoutEffect(() => {
+        const unsub = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
+            if (!snapshot.exists()) {
+                navigation.navigate('Modal')
+            }
+        })
+        return unsub;
+    }, [])
+
+    useEffect(() => {
+        let unsub;
+
+        const fetchCards = async () => {
+            const passes = await getDocs(collection(db, 'users', user.uid, 'passes')).then(
+                (snapshot) => snapshot.docs.map((doc) => doc.id)
+            )
+
+            const swipes = await getDocs(collection(db, 'users', user.uid, 'swipes')).then(
+                (snapshot) => snapshot.docs.map((doc) => doc.id)
+            )
+
+            const passedUserIds = passes.length > 0 ? passes : ["test"]
+            const swipesUserIds = swipes.length > 0 ? passes : ["test"]
+
+            unsub = onSnapshot(
+                query(collection(db, "users"), where("id", "not-in", [...passedUserIds, ...swipesUserIds])),
+                (snapshot) => {
+                    setProfiles(
+                        snapshot.docs
+                            .filter((doc) => doc.id !== user.uid)
+                            .map((doc) => ({
+                                id: doc.id,
+                                ...doc.data(),
+                            })) 
+                    )
+            })
+        }
+
+        fetchCards();
+        return unsub;
+    }, [])
+
+    const swipeLeft = (cardIndex) => {
+        if (!profiles[cardIndex]) return;
+
+        const userSwiped = profiles[cardIndex]
+        console.log(`You swiped PASS on ${userSwiped.displayName}`)
+
+        setDoc(doc(db, 'users', user.uid, 'passes', userSwiped.id), userSwiped)
+    }
+
+    const swipeRight = async (cardIndex) => {
+        if (!profiles[cardIndex]) return;
+        
+        const userSwiped = profiles[cardIndex]
+        const loggedInProfile = await (await getDoc(doc(db, "users", user.uid))).data();
+
+        // Check if the user swiped on you
+        getDoc(doc(db, "users", userSwiped.id, "swipes", user.uid)).then(
+            (documentSnapshot) => {
+                if (documentSnapshot.exists()) {
+                    // user has matched with you before you matched with them
+                    // Create a Match!
+                    console.log(`Hooray, You MATCHED with ${userSwiped.displayName}`)
+                    setDoc(doc(db, 'users', user.uid, 'swipes', userSwiped.id), userSwiped)
+
+                    // Create a Match!
+                    setDoc(doc(db, "matches", generateId(user.uid, userSwiped.id)), {
+                        users: {
+                            [user.uid]: loggedInProfile,
+                            [userSwiped.id]: userSwiped
+                        },
+                        usersMatched: [user.uid, userSwiped.id],
+                        timestamp: serverTimestamp()
+                    })
+
+                    navigation.navigate("Match", {
+                        loggedInProfile,
+                        userSwiped
+                    })
+                } else {
+                    // User has swiped as first interaction between the two or didnt get swiped on
+                    console.log(`You swiped MATCH on ${userSwiped.displayName}`)
+                    setDoc(doc(db, 'users', user.uid, 'swipes', userSwiped.id), userSwiped)
+                }
+            }
+        )
+        
+    }
 
     const DUMMY_DATA = [
         {
@@ -78,7 +172,7 @@ const HomeScreen = () => {
                 <Swiper 
                     ref={swipeRef}
                     containerStyle={{ backgroundColor: 'transparent' }}
-                    cards={DUMMY_DATA}
+                    cards={profiles}
                     stackSize={5}
                     cardIndex={0}
                     animateCardOpacity
@@ -102,14 +196,16 @@ const HomeScreen = () => {
                             }
                         }
                     }}
-                    onSwipedLeft={() => {
+                    onSwipedLeft={(cardIndex) => {
                         console.log("SWIPE PASS")
+                        swipeLeft(cardIndex)
                     }}
-                    onSwipedRight={() => {
+                    onSwipedRight={(cardIndex) => {
                         console.log("SWIPE MATCH")
+                        swipeRight(cardIndex)
                     }}
                     backgroundColor={'#4FD0E9'}
-                    renderCard={(card) => (
+                    renderCard={(card) => card ? (
                         <View 
                             key={card.id} 
                             style={{ 
@@ -146,8 +242,8 @@ const HomeScreen = () => {
                                             lineHeight: 28,
                                             fontWeight: '700'
                                         }}
-                                    >{card.firstName} {card.lastName}</Text>
-                                    <Text>{card.occupation}</Text>
+                                    >{card.displayName}</Text>
+                                    <Text>{card.job}</Text>
                                 </View>
                                 <Text
                                     style={{
@@ -161,6 +257,14 @@ const HomeScreen = () => {
                         </View>
 
                         
+                    ) : (
+                        <View style={[styles.cardShadow, styles.card]}>
+                            <Text style={styles.noMoreTxt}>No more profiles</Text>
+                            <Image 
+                                style={styles.noMoreImage}
+                                source={images.no_more_profile}
+                            />
+                        </View>
                     )}
                 />
             </View>
@@ -188,6 +292,14 @@ const HomeScreen = () => {
 export default HomeScreen
 
 const styles = StyleSheet.create({
+    card: {
+        position: 'relative',
+        backgroundColor: 'white',
+        height: '75%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 12 
+    },
     cardShadow: {
         shadowColor: '#000',
         shadowOffset: {
@@ -204,5 +316,13 @@ const styles = StyleSheet.create({
         width: 64,
         height: 64,
         borderRadius: 99
+    },
+    noMoreTxt: {
+        fontWeight: '700',
+        paddingBottom: 20
+    },
+    noMoreImage: {
+        height: 100,
+        width: 100
     }
 })
