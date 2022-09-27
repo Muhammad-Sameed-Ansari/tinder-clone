@@ -10,7 +10,7 @@ const MatchedScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text>MatchedScreen</Text>
+            <Text>I am a MatchedScreen</Text>
         </View>
     )
 }
